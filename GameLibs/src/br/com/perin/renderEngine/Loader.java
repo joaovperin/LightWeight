@@ -6,6 +6,7 @@
 package br.com.perin.renderEngine;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.BufferUtils;
@@ -18,17 +19,25 @@ import org.lwjgl.opengl.GL30;
  *
  * @author Joaov
  */
-public class Loader {
+public class Loader implements Singleton {
+
+    /** Instance */
+    private static Loader instance;
+
+    private Loader() {
+
+    }
 
     private final List<Integer> vaos = new ArrayList<>();
     private final List<Integer> vbos = new ArrayList<>();
 
-    public RawModel loadToVAO(float[] positions) {
+    public RawModel loadToVAO(float[] positions, int[] indices) {
         int vaoID = createVAO();
+        bindIndicesBuffer(indices);
         vaos.add(vaoID);
         storeDataInAttributeList(0, positions);
         unbindVAO();
-        return new RawModel(vaoID, positions.length / 3);
+        return new RawModel(vaoID, indices.length);
     }
 
     public void cleanUp() {
@@ -61,6 +70,33 @@ public class Loader {
         buffer.put(data);
         buffer.flip();
         return buffer;
+    }
+
+    private void bindIndicesBuffer(int[] indices) {
+        int vboId = GL15.glGenBuffers();
+        vbos.add(vboId);
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboId);
+        IntBuffer buffer = storeDataInIntBuffer(indices);
+        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+    }
+
+    private IntBuffer storeDataInIntBuffer(int[] data) {
+        IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
+        buffer.put(data);
+        buffer.flip();
+        return buffer;
+    }
+
+    @Override
+    public void instantiate() {
+        if (instance == null) {
+            instance = new Loader();
+        }
+    }
+
+    public static final Loader get() {
+        return instance;
     }
 
 }
