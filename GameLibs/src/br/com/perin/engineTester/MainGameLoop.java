@@ -64,16 +64,16 @@ public class MainGameLoop implements Runnable {
         ModelTexture modelTexture = new ModelTexture(Loader.get().loadTexture("test-01"));
         TextureModel textureModel = new TextureModel(model, modelTexture);
         StaticShader shader = new StaticShader();
-        
+
         while (!Display.isCloseRequested()) {
             Renderer.get().prepare();
-            shader.start();
+//            shader.start();
             Renderer.get().render(textureModel);
-            shader.stop();
+//            shader.stop();
             DisplayManager.updateDisplay();
         }
         Loader.get().cleanUp();
-        shader.cleanUp();
+//        shader.cleanUp();
         DisplayManager.closeDisplay();
     }
 
