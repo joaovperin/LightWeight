@@ -5,6 +5,8 @@
  */
 package br.com.perin.renderEngine;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
 
 /**
  *
@@ -30,12 +34,23 @@ public class Loader implements Singleton {
 
     private final List<Integer> vaos = new ArrayList<>();
     private final List<Integer> vbos = new ArrayList<>();
+    private final List<Integer> textures = new ArrayList<>();
+
+    public RawModel loadToVAO(float[] positions, float[] texCoords, int[] indices) {
+        int vaoID = createVAO();
+        bindIndicesBuffer(indices);
+        vaos.add(vaoID);
+        storeDataInAttributeList(0, 3, positions);
+        storeDataInAttributeList(0, 2, positions);
+        unbindVAO();
+        return new RawModel(vaoID, indices.length);
+    }
 
     public RawModel loadToVAO(float[] positions, int[] indices) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         vaos.add(vaoID);
-        storeDataInAttributeList(0, positions);
+        storeDataInAttributeList(0, 3, positions);
         unbindVAO();
         return new RawModel(vaoID, indices.length);
     }
@@ -43,6 +58,7 @@ public class Loader implements Singleton {
     public void cleanUp() {
         vaos.stream().forEach(GL30::glDeleteVertexArrays);
         vbos.stream().forEach(GL15::glDeleteBuffers);
+        textures.stream().forEach(GL11::glDeleteTextures);
     }
 
     private int createVAO() {
@@ -51,13 +67,13 @@ public class Loader implements Singleton {
         return vaoID;
     }
 
-    private void storeDataInAttributeList(int attributeNumber, float[] data) {
+    private void storeDataInAttributeList(int attributeNumber, int coordSize, float[] data) {
         int vboID = GL15.glGenBuffers();
         vbos.add(vboID);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
         FloatBuffer buffer = storeDataInFloatBuffer(data);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(attributeNumber, 3, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(attributeNumber, coordSize, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     }
 
@@ -88,6 +104,19 @@ public class Loader implements Singleton {
         return buffer;
     }
 
+    public int loadTexture(String file) {
+        Texture texture = null;
+        try {
+            texture = TextureLoader.getTexture("PNG", new FileInputStream("res/" + file + ".png"), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int id = texture.getTextureID();
+        textures.add(id);
+        return id;
+
+    }
+
     @Override
     public void instantiate() {
         if (instance == null) {
@@ -96,6 +125,9 @@ public class Loader implements Singleton {
     }
 
     public static final Loader get() {
+        if (instance == null) {
+            instance = new Loader();
+        }
         return instance;
     }
 
