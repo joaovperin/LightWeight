@@ -5,19 +5,18 @@
  */
 package br.com.perin.models;
 
-import br.com.perin.renderEngine.RawModel;
 import br.com.perin.textures.ModelTexture;
 
 /**
  *
  * @author Joaov
  */
-public class TextureModel {
+public class TexturedModel {
 
     private final RawModel rawModel;
     private final ModelTexture texture;
 
-    public TextureModel(RawModel rawModel, ModelTexture texture) {
+    public TexturedModel(RawModel rawModel, ModelTexture texture) {
         this.rawModel = rawModel;
         this.texture = texture;
     }

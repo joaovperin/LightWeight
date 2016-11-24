@@ -5,7 +5,8 @@
  */
 package br.com.perin.renderEngine;
 
-import br.com.perin.models.TextureModel;
+import br.com.perin.models.RawModel;
+import br.com.perin.models.TexturedModel;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -36,16 +37,18 @@ public class Renderer implements Singleton {
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);
     }
-    
-    public void render(TextureModel model) {
-        GL30.glBindVertexArray(model.getRawModel().getVaoId());
+
+    public void render(TexturedModel model) {
+        RawModel raw = model.getRawModel();
+        GL30.glBindVertexArray(raw.getVaoId());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getId());
-        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getRawModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        GL20.glDisableVertexAttribArray(1);
+        // Essa linha está com problemas.
+        GL11.glDrawElements(GL11.GL_TRIANGLES, raw.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
         GL30.glBindVertexArray(0);
     }
 

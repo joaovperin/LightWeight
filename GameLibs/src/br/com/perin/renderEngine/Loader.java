@@ -5,6 +5,8 @@
  */
 package br.com.perin.renderEngine;
 
+import br.com.perin.models.RawModel;
+import br.com.perin.textures.ModelTexture;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -36,21 +38,21 @@ public class Loader implements Singleton {
     private final List<Integer> vbos = new ArrayList<>();
     private final List<Integer> textures = new ArrayList<>();
 
-    public RawModel loadToVAO(float[] positions, float[] texCoords, int[] indices) {
-        int vaoID = createVAO();
-        bindIndicesBuffer(indices);
-        vaos.add(vaoID);
-        storeDataInAttributeList(0, 3, positions);
-        storeDataInAttributeList(1, 2, texCoords);
-        unbindVAO();
-        return new RawModel(vaoID, indices.length);
-    }
-
     public RawModel loadToVAO(float[] positions, int[] indices) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         vaos.add(vaoID);
         storeDataInAttributeList(0, 3, positions);
+        unbindVAO();
+        return new RawModel(vaoID, indices.length);
+    }
+
+    public RawModel loadToVAO(float[] positions, float[] texCoords, int[] indices) {
+        int vaoID = createVAO();
+        vaos.add(vaoID);
+        bindIndicesBuffer(indices);
+        storeDataInAttributeList(0, 3, positions);
+        storeDataInAttributeList(1, 2, texCoords);
         unbindVAO();
         return new RawModel(vaoID, indices.length);
     }
@@ -114,7 +116,10 @@ public class Loader implements Singleton {
         int id = texture.getTextureID();
         textures.add(id);
         return id;
+    }
 
+    public ModelTexture loadModelTexture(String file) {
+        return new ModelTexture(loadTexture(file));
     }
 
     @Override

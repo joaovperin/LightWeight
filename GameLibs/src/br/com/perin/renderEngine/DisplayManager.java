@@ -27,12 +27,13 @@ public class DisplayManager {
         // Version 3.2
         ContextAttribs attribs = new ContextAttribs(3, 2)
                 .withForwardCompatible(true)
-                .withProfileCore(true);
+                .withProfileCore(true)
+                .withDebug(true);
         // Create the screen
         try {
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
-            Display.setTitle(TITLE);
             Display.create(new PixelFormat(), attribs);
+            Display.setTitle(TITLE);
         } catch (LWJGLException e) {
             System.out.println(e);
         }

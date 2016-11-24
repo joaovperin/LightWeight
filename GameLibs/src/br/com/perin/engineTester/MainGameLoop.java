@@ -5,10 +5,10 @@
  */
 package br.com.perin.engineTester;
 
-import br.com.perin.models.TextureModel;
+import br.com.perin.models.TexturedModel;
 import br.com.perin.renderEngine.DisplayManager;
 import br.com.perin.renderEngine.Loader;
-import br.com.perin.renderEngine.RawModel;
+import br.com.perin.models.RawModel;
 import br.com.perin.renderEngine.Renderer;
 import br.com.perin.shaders.StaticShader;
 import br.com.perin.textures.ModelTexture;
@@ -51,7 +51,7 @@ public class MainGameLoop implements Runnable {
      */
     public static void main(String[] args) {
         new MainGameLoop().run();
-    }   
+    }
 
     /**
      * Runs the main code
@@ -59,10 +59,9 @@ public class MainGameLoop implements Runnable {
     @Override
     public void run() {
         DisplayManager.createDisplay();
-
         RawModel model = Loader.get().loadToVAO(vertices, indices);
-        ModelTexture modelTexture = new ModelTexture(Loader.get().loadTexture("test-01"));
-        TextureModel textureModel = new TextureModel(model, modelTexture);
+        ModelTexture modelTexture = Loader.get().loadModelTexture("img2");
+        TexturedModel textureModel = new TexturedModel(model, modelTexture);
         StaticShader shader = new StaticShader();
 
         while (!Display.isCloseRequested()) {

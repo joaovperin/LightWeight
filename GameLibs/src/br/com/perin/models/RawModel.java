@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.perin.renderEngine;
+package br.com.perin.models;
 
 /**
  *
  * @author Joaov
  */
 public class RawModel {
-    
+
     private final int vaoId;
     private final int vertexCount;
 
@@ -26,7 +26,5 @@ public class RawModel {
     public int getVertexCount() {
         return vertexCount;
     }
-    
-    
-    
+
 }
