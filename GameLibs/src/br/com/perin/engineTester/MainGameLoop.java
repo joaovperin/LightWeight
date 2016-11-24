@@ -51,7 +51,7 @@ public class MainGameLoop implements Runnable {
      */
     public static void main(String[] args) {
         new MainGameLoop().run();
-    }
+    }   
 
     /**
      * Runs the main code
@@ -67,13 +67,13 @@ public class MainGameLoop implements Runnable {
 
         while (!Display.isCloseRequested()) {
             Renderer.get().prepare();
-//            shader.start();
+            shader.start();
             Renderer.get().render(textureModel);
-//            shader.stop();
+            shader.stop();
             DisplayManager.updateDisplay();
         }
         Loader.get().cleanUp();
-//        shader.cleanUp();
+        shader.cleanUp();
         DisplayManager.closeDisplay();
     }
 

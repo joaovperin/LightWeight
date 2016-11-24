@@ -41,7 +41,7 @@ public class Loader implements Singleton {
         bindIndicesBuffer(indices);
         vaos.add(vaoID);
         storeDataInAttributeList(0, 3, positions);
-        storeDataInAttributeList(0, 2, positions);
+        storeDataInAttributeList(1, 2, texCoords);
         unbindVAO();
         return new RawModel(vaoID, indices.length);
     }
